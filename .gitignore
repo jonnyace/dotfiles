@@ -1,0 +1,11 @@
+# Ignore sensitive files
+*.log
+*.tmp
+*~
+
+# Ignore backup files created by install script
+*.backup
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
