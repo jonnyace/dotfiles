@@ -1,6 +1,6 @@
 # Arch Linux Dotfiles
 
-Personal configuration files and settings for Arch Linux setup.
+Personal configuration files and settings for Arch Linux setup with custom Omarchy theme.
 
 ## Contents
 
@@ -16,7 +16,7 @@ Personal configuration files and settings for Arch Linux setup.
 
 1. Clone this repository:
    ```bash
-   git clone <your-repo-url> ~/dotfiles
+   git clone https://github.com/jonnyace/arch-config.git ~/dotfiles
    ```
 
 2. Run the installation script:
