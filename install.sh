@@ -15,6 +15,14 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo -e "${GREEN}Installing dotfiles from $DOTFILES_DIR${NC}"
 
+# Install packages first
+echo -e "\n${GREEN}Installing packages...${NC}"
+if [ -f "$DOTFILES_DIR/scripts/install-packages.sh" ]; then
+    bash "$DOTFILES_DIR/scripts/install-packages.sh"
+else
+    echo -e "${YELLOW}Package installation script not found, skipping...${NC}"
+fi
+
 # Function to create symlink with backup
 create_symlink() {
     local source="$1"
