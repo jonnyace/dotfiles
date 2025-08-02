@@ -29,7 +29,8 @@ sudo pacman -S --needed --noconfirm \
     npm \
     nodejs \
     git \
-    base-devel
+    base-devel \
+    syncthing
 
 # Install AUR helper if not present
 if ! command -v yay &> /dev/null; then
@@ -52,6 +53,7 @@ echo -e "${YELLOW}Setting Brave as default browser...${NC}"
 xdg-settings set default-web-browser brave-browser.desktop
 
 echo -e "${GREEN}Package installation complete!${NC}"
-echo -e "${YELLOW}Installed: Claude Code, Brave Browser, npm, nodejs${NC}"
+echo -e "${YELLOW}Installed: Claude Code, Brave Browser, npm, nodejs, syncthing${NC}"
 echo -e "${YELLOW}Claude Code: Use 'claude' command${NC}"
 echo -e "${YELLOW}Brave is now your default browser${NC}"
+echo -e "${YELLOW}Syncthing: Access web UI at http://localhost:8384 after starting service${NC}"
