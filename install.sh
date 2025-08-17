@@ -72,24 +72,24 @@ case $OS in
 esac
 
 # Define available packages
-COMMON_PACKAGES=("shell" "terminal" "editors" "system-tools" "desktop" "x11")
-ARCH_PACKAGES=("hyprland")
+LINUX_PACKAGES=("shell" "terminal" "editors" "system-tools" "desktop" "x11" "hyprland")
 MAC_PACKAGES=()
 
 # Function to install a stow package
 install_package() {
     local package="$1"
+    local package_dir="$2"
     echo -e "${GREEN}Installing $package package...${NC}"
     
     # Use stow to create symlinks
-    if stow --target="$HOME" --dir="$DOTFILES_DIR" "$package" 2>/dev/null; then
+    if stow --target="$HOME" --dir="$package_dir" "$package" 2>/dev/null; then
         echo -e "${GREEN}✓ Successfully installed $package${NC}"
     else
         echo -e "${YELLOW}⚠ Warning: Conflicts detected for $package. Use 'stow --adopt' to resolve or backup existing files.${NC}"
         read -p "Do you want to adopt existing files and overwrite them? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            stow --adopt --target="$HOME" --dir="$DOTFILES_DIR" "$package"
+            stow --adopt --target="$HOME" --dir="$package_dir" "$package"
             echo -e "${GREEN}✓ Successfully adopted and installed $package${NC}"
         else
             echo -e "${YELLOW}⚠ Skipped $package due to conflicts${NC}"
@@ -97,23 +97,13 @@ install_package() {
     fi
 }
 
-# Install common packages
-echo -e "\n${GREEN}Installing common packages...${NC}"
-for package in "${COMMON_PACKAGES[@]}"; do
-    if [ -d "$DOTFILES_DIR/$package" ]; then
-        install_package "$package"
-    else
-        echo -e "${YELLOW}Package $package not found, skipping...${NC}"
-    fi
-done
-
 # Install OS-specific packages
 case $OS in
-    "arch")
-        echo -e "\n${GREEN}Installing Arch-specific packages...${NC}"
-        for package in "${ARCH_PACKAGES[@]}"; do
-            if [ -d "$DOTFILES_DIR/$package" ]; then
-                install_package "$package"
+    "arch"|"linux")
+        echo -e "\n${GREEN}Installing Linux packages...${NC}"
+        for package in "${LINUX_PACKAGES[@]}"; do
+            if [ -d "$DOTFILES_DIR/linux/$package" ]; then
+                install_package "$package" "$DOTFILES_DIR/linux"
             else
                 echo -e "${YELLOW}Package $package not found, skipping...${NC}"
             fi
@@ -122,8 +112,8 @@ case $OS in
     "mac")
         echo -e "\n${GREEN}Installing macOS-specific packages...${NC}"
         for package in "${MAC_PACKAGES[@]}"; do
-            if [ -d "$DOTFILES_DIR/$package" ]; then
-                install_package "$package"
+            if [ -d "$DOTFILES_DIR/macos/$package" ]; then
+                install_package "$package" "$DOTFILES_DIR/macos"
             else
                 echo -e "${YELLOW}Package $package not found, skipping...${NC}"
             fi

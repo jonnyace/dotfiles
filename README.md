@@ -12,18 +12,19 @@ Cross-platform configuration files and settings for Arch Linux and macOS using G
 
 ## Package Structure
 
-This repository is organized into modular packages that can be installed independently:
+This repository is organized into platform-specific folders containing modular packages:
 
-### Common Packages (Both Arch & macOS)
+### Linux Packages (linux/)
 - **shell**: Bash configuration, git config, and shell environment
 - **terminal**: Alacritty terminal configuration
 - **editors**: Neovim and Lazygit configurations
 - **system-tools**: btop, fastfetch, and walker configurations
 - **desktop**: Desktop environment files (fontconfig, mimeapps, etc.)
 - **x11**: X11 configuration files
-
-### Arch Linux Specific
 - **hyprland**: Hyprland window manager, Waybar, Mako notifications, SwayOSD
+
+### macOS Packages (macos/)
+- **macos-setup.sh**: Comprehensive macOS system configuration script
 
 ## Quick Installation
 
@@ -49,28 +50,29 @@ The script will:
 
 ### Install specific packages:
 ```bash
-# Install shell configuration only
+# For Linux systems
+cd linux/
 stow shell
-
-# Install terminal configuration
 stow terminal
-
-# Install editor configurations
 stow editors
+
+# For macOS systems
+cd macos/
+./macos-setup.sh
 ```
 
 ### Remove packages:
 ```bash
-# Remove shell configuration
+# For Linux systems
+cd linux/
 stow -D shell
-
-# Remove all installed packages
-stow -D shell terminal editors system-tools desktop x11
+stow -D terminal editors system-tools desktop x11 hyprland
 ```
 
 ### Reinstall/update packages:
 ```bash
-# Reinstall shell configuration
+# For Linux systems
+cd linux/
 stow -R shell
 ```
 
@@ -102,11 +104,14 @@ stow -R shell
 ### x11
 - `.XCompose` - X11 compose key configuration
 
-### hyprland (Arch Linux only)
+### hyprland (Linux only)
 - `hypr/` - Hyprland compositor configuration
 - `waybar/` - Waybar status bar configuration
 - `mako/` - Mako notification daemon configuration
 - `swayosd/` - SwayOSD configuration
+
+### macos/
+- `macos-setup.sh` - Comprehensive macOS system setup script
 
 ## System Packages
 
@@ -162,11 +167,12 @@ stow --adopt shell
 
 ### Remove all dotfiles
 ```bash
-# List currently installed packages
-ls ~/dotfiles/
-
-# Remove all packages (replace with your actual packages)
+# For Linux systems
+cd ~/dotfiles/linux/
 stow -D shell terminal editors system-tools desktop x11 hyprland
+
+# For macOS systems
+# macOS configurations are handled by the setup script and system preferences
 ```
 
 ## Requirements
