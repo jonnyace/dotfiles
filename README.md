@@ -26,11 +26,23 @@ This repository is organized into platform-specific folders containing modular p
 ### macOS Packages (macos/)
 - **macos-setup.sh**: Comprehensive macOS system configuration script
 
-## Quick Installation
+## One-Line Installation
+
+**Linux/Arch systems:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+```
+
+**macOS systems:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-setup.sh | bash
+```
+
+## Manual Installation
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/jonnyace/arch-config.git ~/dotfiles
+   git clone https://github.com/jonnyace/dotfiles.git ~/dotfiles
    cd ~/dotfiles
    ```
 

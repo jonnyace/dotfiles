@@ -12,7 +12,21 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Check if we're running from a downloaded script or from the repo
+if [ ! -d "$(dirname "${BASH_SOURCE[0]}")/linux" ]; then
+    echo -e "${GREEN}Cloning dotfiles repository...${NC}"
+    DOTFILES_DIR="$HOME/dotfiles"
+    if [ -d "$DOTFILES_DIR" ]; then
+        echo -e "${YELLOW}Dotfiles directory already exists, updating...${NC}"
+        cd "$DOTFILES_DIR"
+        git pull
+    else
+        git clone https://github.com/jonnyace/dotfiles.git "$DOTFILES_DIR"
+        cd "$DOTFILES_DIR"
+    fi
+else
+    DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 echo -e "${GREEN}Installing dotfiles from $DOTFILES_DIR using GNU Stow${NC}"
 
