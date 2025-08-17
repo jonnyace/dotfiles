@@ -24,7 +24,7 @@ This repository is organized into platform-specific folders containing modular p
 - **hyprland**: Hyprland window manager, Waybar, Mako notifications, SwayOSD
 
 ### macOS Packages (macos/)
-- **macos-setup.sh**: Comprehensive macOS system configuration script
+- **macos-setup.sh**: Comprehensive macOS system setup script that installs cross-platform dotfiles and configures system settings
 
 ## One-Line Installation
 
@@ -37,6 +37,12 @@ curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh |
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-setup.sh | bash
 ```
+
+The macOS script will:
+- Install Homebrew and development dependencies
+- Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
+- Configure Finder settings and reduce animations  
+- Perform system cleanup and optimizations
 
 ## Manual Installation
 

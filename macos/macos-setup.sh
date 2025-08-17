@@ -96,7 +96,7 @@ fi
 
 installDepend() {
     ## Check for dependencies.
-    DEPENDENCIES='tree multitail tealdeer unzip cmake make jq fd ripgrep automake autoconf rustup python pipx'
+    DEPENDENCIES='tree multitail tealdeer unzip cmake make jq fd ripgrep automake autoconf rustup python pipx stow git'
     printf "%b\n" "${YELLOW}Installing dependencies...${RC}"
     brew install $DEPENDENCIES
 }
@@ -241,6 +241,51 @@ cleanup_system() {
     find /var/log -type f -name "*.err" -mtime +30 -exec $ESCALATION_TOOL rm -f {} \;
 }
 
+install_dotfiles() {
+    printf "%b\n" "${YELLOW}Installing dotfiles using GNU Stow...${RC}"
+    
+    # Check if we're running from a downloaded script or from the repo
+    DOTFILES_DIR="$HOME/dotfiles"
+    if [ -d "$DOTFILES_DIR" ]; then
+        printf "%b\n" "${YELLOW}Dotfiles directory already exists, updating...${RC}"
+        cd "$DOTFILES_DIR"
+        git pull
+    else
+        printf "%b\n" "${CYAN}Cloning dotfiles repository...${RC}"
+        git clone https://github.com/jonnyace/dotfiles.git "$DOTFILES_DIR"
+        cd "$DOTFILES_DIR"
+    fi
+    
+    # Define macOS-compatible packages
+    MACOS_PACKAGES=("shell" "terminal" "editors" "system-tools")
+    
+    # Function to install a stow package
+    install_package() {
+        local package="$1"
+        printf "%b\n" "${CYAN}Installing $package package...${RC}"
+        
+        # Use stow to create symlinks
+        if stow --target="$HOME" --dir="$DOTFILES_DIR/linux" "$package" 2>/dev/null; then
+            printf "%b\n" "${GREEN}✓ Successfully installed $package${RC}"
+        else
+            printf "%b\n" "${YELLOW}⚠ Warning: Conflicts detected for $package. Adopting existing files...${RC}"
+            stow --adopt --target="$HOME" --dir="$DOTFILES_DIR/linux" "$package" 2>/dev/null || true
+            printf "%b\n" "${GREEN}✓ Successfully adopted and installed $package${RC}"
+        fi
+    }
+    
+    # Install macOS-compatible packages
+    for package in "${MACOS_PACKAGES[@]}"; do
+        if [ -d "$DOTFILES_DIR/linux/$package" ]; then
+            install_package "$package"
+        else
+            printf "%b\n" "${YELLOW}Package $package not found, skipping...${RC}"
+        fi
+    done
+    
+    printf "%b\n" "${GREEN}Dotfiles installation complete!${RC}"
+}
+
 main() {
     printf "%b\n" "${GREEN}Starting macOS System Setup...${RC}"
     
@@ -249,17 +294,21 @@ main() {
     printf "%b\n" "${GREEN}1. Installing development dependencies...${RC}"
     installDepend
     
-    printf "%b\n" "${GREEN}2. Configuring Finder settings...${RC}"
+    printf "%b\n" "${GREEN}2. Installing dotfiles...${RC}"
+    install_dotfiles
+    
+    printf "%b\n" "${GREEN}3. Configuring Finder settings...${RC}"
     fixfinder
     
-    printf "%b\n" "${GREEN}3. Reducing animations...${RC}"
+    printf "%b\n" "${GREEN}4. Reducing animations...${RC}"
     removeAnimations
     
-    printf "%b\n" "${GREEN}4. Performing system cleanup...${RC}"
+    printf "%b\n" "${GREEN}5. Performing system cleanup...${RC}"
     cleanup_system
     
     printf "%b\n" "${GREEN}macOS System Setup Complete!${RC}"
-    printf "%b\n" "${YELLOW}Please restart your system to ensure all changes take effect.${RC}"
+    printf "%b\n" "${YELLOW}Please restart your terminal or logout/login for dotfiles to take effect.${RC}"
+    printf "%b\n" "${YELLOW}Please restart your system to ensure all system changes take effect.${RC}"
 }
 
 # Run main function if script is executed directly
