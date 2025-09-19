@@ -3,11 +3,11 @@
 # Cross-platform macOS Setup Script
 # Installs only essential cross-platform tools: homebrew, dev dependencies, dropbox, spotify, 1password
 
-RC=''
-RED=''
-YELLOW=''
-CYAN=''
-GREEN=''
+RC='\033[0m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
 
 command_exists() {
 for cmd in "$@"; do
