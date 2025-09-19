@@ -24,7 +24,7 @@ This repository is organized into platform-specific folders containing modular p
 - **hyprland**: Hyprland window manager, Waybar, Mako notifications, SwayOSD
 
 ### macOS Packages (macos/)
-- **macos-setup.sh**: Comprehensive macOS system setup script that installs cross-platform dotfiles and configures system settings
+- **macos-setup.sh**: Cross-platform macOS setup script that installs development tools, essential applications, and dotfiles
 
 ## One-Line Installation
 
@@ -40,9 +40,8 @@ curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-
 
 The macOS script will:
 - Install Homebrew and development dependencies
+- Install essential applications (Dropbox, Spotify, 1Password)
 - Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
-- Configure Finder settings and reduce animations  
-- Perform system cleanup and optimizations
 
 ## Manual Installation
 
@@ -129,7 +128,7 @@ stow -R shell
 - `swayosd/` - SwayOSD configuration
 
 ### macos/
-- `macos-setup.sh` - Comprehensive macOS system setup script
+- `macos-setup.sh` - Cross-platform macOS setup script for development tools and essential applications
 
 ## System Packages
 
@@ -141,10 +140,8 @@ The installation script will install essential packages for your system:
 - System tools: btop, fastfetch, lazygit, neovim
 
 ### macOS (via Homebrew)
-- Base packages: node, npm, git, stow, neovim
-- System tools: btop, fastfetch, lazygit
-- Applications: alacritty, brave-browser
-- Optional: claude-code
+- Development tools: node, npm, git, stow, neovim, tree, jq, fd, ripgrep, python, pipx
+- Essential applications: Dropbox, Spotify, 1Password
 
 ## Customization
 
