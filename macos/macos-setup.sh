@@ -1,13 +1,18 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # Cross-platform macOS Setup Script
 # Installs only essential cross-platform tools: homebrew, dev dependencies, dropbox, spotify, 1password
+
+set -e
 
 RC='\033[0m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
+
+# Debug: Show that script is starting
+echo "Starting macOS setup script..."
 
 command_exists() {
 for cmd in "$@"; do
@@ -146,13 +151,17 @@ install_dotfiles() {
 }
 
 main() {
+    echo "Debug: main function called"
     printf "%b\n" "${GREEN}Starting Cross-Platform macOS Setup...${RC}"
 
+    echo "Debug: calling checkEnv"
     checkEnv
 
+    echo "Debug: calling installDepend"
     printf "%b\n" "${GREEN}1. Installing development dependencies and applications...${RC}"
     installDepend
 
+    echo "Debug: calling install_dotfiles"
     printf "%b\n" "${GREEN}2. Installing dotfiles...${RC}"
     install_dotfiles
 
