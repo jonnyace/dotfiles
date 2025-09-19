@@ -28,23 +28,6 @@ done
 return 0
 }
 
-setup_askpass() {
-    # Create a temporary askpass helper script
-    ASKPASS_SCRIPT="/tmp/macutil_askpass_$$"
-    cat > "$ASKPASS_SCRIPT" << 'EOF'
-#!/bin/sh
-osascript -e 'display dialog "Administrator password required for MacUtil setup:" default answer "" with hidden answer' -e 'text returned of result' 2>/dev/null
-EOF
-    chmod +x "$ASKPASS_SCRIPT"
-    export SUDO_ASKPASS="$ASKPASS_SCRIPT"
-}
-
-cleanup_askpass() {
-    # Clean up the temporary askpass script
-    if [ -n "$ASKPASS_SCRIPT" ] && [ -f "$ASKPASS_SCRIPT" ]; then
-        rm -f "$ASKPASS_SCRIPT"
-    fi
-}
 
 checkPackageManager() {
     ## Check if brew is installed
@@ -54,15 +37,9 @@ checkPackageManager() {
         printf "%b\n" "${RED}Homebrew is not installed${RC}"
         printf "%b\n" "${YELLOW}Installing Homebrew...${RC}"
 
-        # Setup askpass helper for automated password handling
-        setup_askpass
-
-        # Use sudo with askpass for non-interactive installation
-        SUDO_ASKPASS="$ASKPASS_SCRIPT" sudo -A /bin/bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # Install Homebrew using standard installation
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         install_result=$?
-
-        # Cleanup askpass helper
-        cleanup_askpass
 
         if [ $install_result -ne 0 ]; then
             printf "%b\n" "${RED}Failed to install Homebrew${RC}"
@@ -75,7 +52,6 @@ checkPackageManager() {
         elif [ -f "/usr/local/bin/brew" ]; then
             eval "$(/usr/local/bin/brew shellenv)"
         fi
-        trap cleanup_askpass EXIT INT TERM
     fi
 }
 
