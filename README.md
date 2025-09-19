@@ -40,7 +40,7 @@ curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-
 
 The macOS script will:
 - Install Homebrew and development dependencies
-- Install essential applications (Dropbox, Spotify, 1Password, Alacritty, Brave Browser)
+- Install essential applications (Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI)
 - Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
 
 ## Manual Installation
@@ -141,7 +141,7 @@ The installation script will install essential packages for your system:
 
 ### macOS (via Homebrew)
 - Development tools: node, npm, git, stow, neovim, tree, jq, fd, ripgrep, python, pipx
-- Essential applications: Dropbox, Spotify, 1Password, Alacritty, Brave Browser
+- Essential applications: Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI
 
 ## Customization
 

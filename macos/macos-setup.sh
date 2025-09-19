@@ -100,10 +100,32 @@ installDepend() {
     APPLICATIONS='dropbox spotify 1password alacritty brave-browser'
 
     printf "%b\n" "${YELLOW}Installing development dependencies...${RC}"
-    brew install $DEV_DEPENDENCIES
+    for dep in $DEV_DEPENDENCIES; do
+        if brew list "$dep" >/dev/null 2>&1; then
+            printf "%b\n" "${GREEN}✓ $dep already installed${RC}"
+        else
+            printf "%b\n" "${CYAN}Installing $dep...${RC}"
+            brew install "$dep" || printf "%b\n" "${YELLOW}⚠ Failed to install $dep, continuing...${RC}"
+        fi
+    done
 
     printf "%b\n" "${YELLOW}Installing applications...${RC}"
-    brew install --cask $APPLICATIONS
+    for app in $APPLICATIONS; do
+        if brew list --cask "$app" >/dev/null 2>&1; then
+            printf "%b\n" "${GREEN}✓ $app already installed${RC}"
+        else
+            printf "%b\n" "${CYAN}Installing $app...${RC}"
+            brew install --cask "$app" || printf "%b\n" "${YELLOW}⚠ Failed to install $app, continuing...${RC}"
+        fi
+    done
+
+    printf "%b\n" "${YELLOW}Installing Claude CLI...${RC}"
+    if brew list --cask claude-cli >/dev/null 2>&1; then
+        printf "%b\n" "${GREEN}✓ claude-cli already installed${RC}"
+    else
+        printf "%b\n" "${CYAN}Installing claude-cli...${RC}"
+        brew install --cask claude-cli || printf "%b\n" "${YELLOW}⚠ Failed to install claude-cli, continuing...${RC}"
+    fi
 }
 
 
