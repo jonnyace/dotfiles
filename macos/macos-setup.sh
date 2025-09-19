@@ -90,7 +90,7 @@ checkEnv() {
 installDepend() {
     ## Install development dependencies and cross-platform tools
     DEV_DEPENDENCIES='tree multitail tealdeer unzip cmake make jq fd ripgrep automake autoconf rustup python pipx stow git node npm'
-    APPLICATIONS='dropbox spotify 1password'
+    APPLICATIONS='dropbox spotify 1password alacritty brave-browser'
 
     printf "%b\n" "${YELLOW}Installing development dependencies...${RC}"
     brew install $DEV_DEPENDENCIES
