@@ -160,7 +160,5 @@ main() {
     printf "%b\n" "${YELLOW}Please restart your terminal or logout/login for dotfiles to take effect.${RC}"
 }
 
-# Run main function if script is executed directly
-if [ "${0##*/}" = "macos-setup.sh" ]; then
-    main "$@"
-fi
+# Run main function
+main "$@"
