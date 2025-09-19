@@ -38,7 +38,7 @@ checkPackageManager() {
         printf "%b\n" "${YELLOW}Installing Homebrew...${RC}"
 
         # Install Homebrew using standard installation
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         install_result=$?
 
         if [ $install_result -ne 0 ]; then
@@ -46,12 +46,38 @@ checkPackageManager() {
             exit 1
         fi
 
-        # Add Homebrew to PATH for the current session
+        printf "%b\n" "${GREEN}Homebrew installed successfully${RC}"
+
+        # Add Homebrew to PATH for current session and permanently
         if [ -f "/opt/homebrew/bin/brew" ]; then
+            # Apple Silicon Mac
+            printf "%b\n" "${YELLOW}Adding Homebrew to PATH for Apple Silicon Mac...${RC}"
             eval "$(/opt/homebrew/bin/brew shellenv)"
+
+            # Add to shell profile permanently
+            if [ -f "$HOME/.zprofile" ]; then
+                grep -q '/opt/homebrew/bin/brew shellenv' "$HOME/.zprofile" || echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+            else
+                echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+            fi
+
         elif [ -f "/usr/local/bin/brew" ]; then
+            # Intel Mac
+            printf "%b\n" "${YELLOW}Adding Homebrew to PATH for Intel Mac...${RC}"
             eval "$(/usr/local/bin/brew shellenv)"
+
+            # Add to shell profile permanently
+            if [ -f "$HOME/.zprofile" ]; then
+                grep -q '/usr/local/bin/brew shellenv' "$HOME/.zprofile" || echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME/.zprofile"
+            else
+                echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME/.zprofile"
+            fi
+        else
+            printf "%b\n" "${RED}Homebrew installation failed - brew binary not found${RC}"
+            exit 1
         fi
+
+        printf "%b\n" "${GREEN}Homebrew PATH configured${RC}"
     fi
 }
 
