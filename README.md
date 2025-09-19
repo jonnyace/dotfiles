@@ -1,22 +1,40 @@
 # Cross-Platform Dotfiles
 
-Modern development environment configurations for Arch Linux and macOS using chezmoi for dotfile management.
+Modern development environment configurations for Arch Linux and macOS using a hybrid approach:
+- **GNU Stow** for Linux-specific configurations (Hyprland, desktop environments)
+- **chezmoi** for cross-platform tools and modern development setup
 
 ## Features
 
-- **Cross-platform**: Works on both Arch Linux and macOS
-- **Chezmoi integration**: Secure, templated dotfile management
+- **Dual management system**: GNU Stow for Linux, chezmoi for cross-platform
+- **Platform-specific**: Optimized configurations for each operating system
 - **Modern development tools**: LazyVim, shell enhancements, and productivity tools
-- **Automated setup**: One-command installation and synchronization
+- **Modular approach**: Install only what you need
 - **Version controlled**: All configurations tracked and easily shareable
 
-## Current Setup
+## Which Approach Should You Use?
 
-This dotfiles repository includes configurations for:
+### Use GNU Stow (Linux) when:
+- You want traditional Linux dotfile management
+- You need desktop environment configs (Hyprland, i3, etc.)
+- You prefer simple symlink-based management
+- You're setting up a Linux-only environment
 
-### Development Tools
+### Use chezmoi (Cross-platform) when:
+- You work across multiple operating systems
+- You want modern development tools consistently
+- You need templating or conditional configurations
+- You prefer a more feature-rich dotfile manager
+
+### Use Both (Hybrid) when:
+- You want the best of both worlds
+- You have Linux desktop configs AND cross-platform dev tools
+- You want to gradually migrate from Stow to chezmoi
+
+## Repository Structure
+
+### Cross-Platform Configurations (chezmoi managed)
 - **LazyVim**: Modern Neovim configuration with plugin management
-- **Alacritty**: Fast, cross-platform terminal emulator
 - **Shell Tools**: Enhanced command-line experience
   - `fzf`: Fuzzy finder for files and commands
   - `zoxide`: Smart directory navigation
@@ -26,83 +44,187 @@ This dotfiles repository includes configurations for:
   - `lazygit`: Terminal UI for git
   - `lazydocker`: Terminal UI for Docker
 - **GitHub CLI**: Command-line interface for GitHub
-
-### Applications
+- **Alacritty**: Cross-platform terminal emulator
 - **Signal**: Secure messaging application
+
+### Linux-Specific Configurations (GNU Stow managed)
+Located in `linux/` directory:
+
+#### `linux/shell/`
+- `.bashrc` - Bash configuration with enhanced features
+- `.bash_profile` - Bash profile settings
+- `.gitconfig` - Global git configuration with aliases
+
+#### `linux/terminal/`
+- `alacritty/` - Alacritty terminal emulator configuration
+
+#### `linux/editors/`
+- `nvim/` - Traditional Neovim configuration
+- `lazygit/` - Lazygit configuration
+
+#### `linux/system-tools/`
+- `btop/` - System monitor configuration and themes
+- `fastfetch/` - System information display
+- `walker/` - Application launcher
+
+#### `linux/desktop/`
+- `fontconfig/` - Font configuration
+- `environment.d/` - Environment variables
+- `mimeapps.list` - Default application associations
+- `user-dirs.dirs` - XDG user directories
+
+#### `linux/x11/`
+- `.XCompose` - X11 compose key configuration
+
+#### `linux/hyprland/`
+- `hypr/` - Hyprland compositor configuration
+- `waybar/` - Waybar status bar
+- `mako/` - Notification daemon
+- `swayosd/` - On-screen display
 
 ## Installation
 
-### Prerequisites
-- **macOS**: Homebrew (will be installed automatically if missing)
-- **Linux**: Package manager (pacman for Arch, apt for Ubuntu, etc.)
+### Quick Installation (Recommended)
 
-### Install with chezmoi
+**macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install-macos.sh | bash
+```
 
-1. **Install chezmoi and initialize with this repository:**
+**Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install-linux.sh | bash
+```
+
+### Manual Installation
+
+Choose your installation method based on your operating system and preferences:
+
+### macOS Setup (chezmoi + modern tools)
+
+1. **Install chezmoi and initialize:**
    ```bash
-   # macOS
    brew install chezmoi
    chezmoi init jonnyace/dotfiles
-
-   # Linux (Arch)
-   pacman -S chezmoi
-   chezmoi init jonnyace/dotfiles
-
-   # Other Linux distributions
-   sh -c "$(curl -fsLS get.chezmoi.io)" -- init jonnyace/dotfiles
-   ```
-
-2. **Review and apply the dotfiles:**
-   ```bash
    chezmoi diff
    chezmoi apply
    ```
 
-### Install Development Tools
+2. **Install development tools:**
+   ```bash
+   brew install neovim fzf zoxide eza fd ripgrep lazygit lazydocker gh
+   brew install --cask alacritty signal
+   ```
 
-**macOS:**
-```bash
-# Install all development tools and applications
-brew install neovim fzf zoxide eza fd ripgrep lazygit lazydocker gh
-brew install --cask alacritty signal
-```
+### Linux Setup (GNU Stow + optional chezmoi)
 
-**Linux (Arch):**
-```bash
-# Install development tools
-pacman -S neovim fzf zoxide eza fd ripgrep lazygit lazydocker github-cli alacritty
-```
+#### Option 1: GNU Stow (Traditional Linux approach)
+
+1. **Clone and setup:**
+   ```bash
+   git clone https://github.com/jonnyace/dotfiles.git ~/dotfiles
+   cd ~/dotfiles
+   ```
+
+2. **Install system packages (Arch Linux):**
+   ```bash
+   sudo pacman -S stow git neovim alacritty btop fastfetch lazygit
+   ```
+
+3. **Install configurations selectively:**
+   ```bash
+   cd linux/
+
+   # Essential configs
+   stow shell
+   stow terminal
+   stow editors
+   stow system-tools
+
+   # Desktop environment (optional)
+   stow desktop
+   stow x11
+
+   # Hyprland setup (if using Hyprland)
+   stow hyprland
+   ```
+
+#### Option 2: Hybrid approach (Stow + chezmoi)
+
+1. **Setup GNU Stow for Linux configs:**
+   ```bash
+   git clone https://github.com/jonnyace/dotfiles.git ~/dotfiles
+   cd ~/dotfiles/linux
+   stow shell terminal editors system-tools
+   ```
+
+2. **Setup chezmoi for cross-platform tools:**
+   ```bash
+   # Install chezmoi
+   sudo pacman -S chezmoi  # or: sh -c "$(curl -fsLS get.chezmoi.io)"
+
+   # Initialize and apply cross-platform configs
+   chezmoi init jonnyace/dotfiles
+   chezmoi apply
+   ```
 
 ## Managing Dotfiles
 
-### Adding new configurations
+### For Cross-Platform Configs (chezmoi)
+
 ```bash
-# Add a file to chezmoi management
+# Add new configurations
 chezmoi add ~/.config/newapp/config.yaml
-
-# Edit files directly with chezmoi
 chezmoi edit ~/.zshrc
-```
 
-### Updating configurations
-```bash
-# Pull latest changes from repository
-chezmoi update
+# Update and sync
+chezmoi update    # Pull latest changes
+chezmoi diff      # View differences
+chezmoi apply     # Apply changes
 
-# View differences before applying
-chezmoi diff
-
-# Apply changes
-chezmoi apply
-```
-
-### Pushing changes
-```bash
-# Add and commit changes
+# Push changes
 chezmoi cd
 git add .
 git commit -m "Update configurations"
 git push
+```
+
+### For Linux Configs (GNU Stow)
+
+```bash
+# Add new package
+cd ~/dotfiles/linux
+mkdir newpackage
+# Structure files like: newpackage/.config/app/config.conf
+stow newpackage
+
+# Update existing package
+cd ~/dotfiles/linux
+# Edit files in the package directory
+stow -R packagename    # Restow to apply changes
+
+# Remove package
+stow -D packagename
+
+# Push changes to git
+cd ~/dotfiles
+git add .
+git commit -m "Update Linux configurations"
+git push
+```
+
+### Package Management (Linux Stow)
+
+```bash
+# Install specific packages
+cd ~/dotfiles/linux
+stow shell terminal editors
+
+# Remove packages
+stow -D hyprland desktop
+
+# Reinstall (useful after editing)
+stow -R system-tools
 ```
 
 ## Configuration Files
