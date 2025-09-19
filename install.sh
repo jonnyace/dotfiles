@@ -77,10 +77,13 @@ case $OS in
         fi
         ;;
     "mac")
-        if [ -f "$DOTFILES_DIR/scripts/install-packages-mac.sh" ]; then
-            bash "$DOTFILES_DIR/scripts/install-packages-mac.sh"
+        if [ -f "$DOTFILES_DIR/macos/macos-setup.sh" ]; then
+            echo -e "${GREEN}Running comprehensive macOS setup script...${NC}"
+            bash "$DOTFILES_DIR/macos/macos-setup.sh"
+            echo -e "${GREEN}macOS setup complete!${NC}"
+            exit 0
         else
-            echo -e "${YELLOW}macOS package installation script not found, skipping...${NC}"
+            echo -e "${YELLOW}macOS setup script not found, skipping...${NC}"
         fi
         ;;
 esac
