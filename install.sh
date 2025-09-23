@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Check if we're running from a downloaded script or from the repo
 if [ ! -d "$(dirname "${BASH_SOURCE[0]}")/linux" ]; then
     echo -e "${GREEN}Cloning dotfiles repository...${NC}"
-    DOTFILES_DIR="$HOME/dotfiles"
+    DOTFILES_DIR="$HOME/dev/dotfiles"
     if [ -d "$DOTFILES_DIR" ]; then
         echo -e "${YELLOW}Dotfiles directory already exists, updating...${NC}"
         cd "$DOTFILES_DIR"

@@ -1,330 +1,204 @@
-# Cross-Platform Dotfiles
+# Arch Linux & macOS Dotfiles
 
-Modern development environment configurations for Arch Linux and macOS using a hybrid approach:
-- **GNU Stow** for Linux-specific configurations (Hyprland, desktop environments)
-- **chezmoi** for cross-platform tools and modern development setup
+Cross-platform configuration files and settings for Arch Linux and macOS using GNU Stow for easy management.
 
 ## Features
 
-- **Dual management system**: GNU Stow for Linux, chezmoi for cross-platform
-- **Platform-specific**: Optimized configurations for each operating system
-- **Modern development tools**: LazyVim, shell enhancements, and productivity tools
-- **Modular approach**: Install only what you need
-- **Version controlled**: All configurations tracked and easily shareable
+- **Cross-platform**: Works on both Arch Linux and macOS
+- **GNU Stow integration**: Easy installation, removal, and management of dotfiles
+- **Modular packages**: Install only the configurations you need
+- **Automatic OS detection**: Installs appropriate packages for your system
+- **Conflict resolution**: Safe handling of existing configuration files
 
-## Which Approach Should You Use?
+## Package Structure
 
-### Use GNU Stow (Linux) when:
-- You want traditional Linux dotfile management
-- You need desktop environment configs (Hyprland, i3, etc.)
-- You prefer simple symlink-based management
-- You're setting up a Linux-only environment
+This repository is organized into platform-specific folders containing modular packages:
 
-### Use chezmoi (Cross-platform) when:
-- You work across multiple operating systems
-- You want modern development tools consistently
-- You need templating or conditional configurations
-- You prefer a more feature-rich dotfile manager
+### Linux Packages (linux/)
+- **shell**: Bash configuration, git config, and shell environment
+- **terminal**: Alacritty terminal configuration
+- **editors**: Neovim and Lazygit configurations
+- **system-tools**: btop, fastfetch, and walker configurations
+- **desktop**: Desktop environment files (fontconfig, mimeapps, etc.)
+- **x11**: X11 configuration files
+- **hyprland**: Hyprland window manager, Waybar, Mako notifications, SwayOSD
 
-### Use Both (Hybrid) when:
-- You want the best of both worlds
-- You have Linux desktop configs AND cross-platform dev tools
-- You want to gradually migrate from Stow to chezmoi
+### macOS Packages (macos/)
+- **macos-setup.sh**: Cross-platform macOS setup script that installs development tools, essential applications, and dotfiles
 
-## Repository Structure
+## One-Line Installation
 
-### Cross-Platform Configurations (chezmoi managed)
-- **LazyVim**: Modern Neovim configuration with plugin management
-- **Shell Tools**: Enhanced command-line experience
-  - `fzf`: Fuzzy finder for files and commands
-  - `zoxide`: Smart directory navigation
-  - `eza`: Modern replacement for `ls`
-  - `fd`: User-friendly alternative to `find`
-  - `ripgrep`: Fast text search
-  - `lazygit`: Terminal UI for git
-  - `lazydocker`: Terminal UI for Docker
-- **GitHub CLI**: Command-line interface for GitHub
-- **Alacritty**: Cross-platform terminal emulator
-- **Signal**: Secure messaging application
+**Linux/Arch systems:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+```
 
-### Linux-Specific Configurations (GNU Stow managed)
-Located in `linux/` directory:
+**macOS systems:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-setup.sh | bash
+```
 
-#### `linux/shell/`
-- `.bashrc` - Bash configuration with enhanced features
+The macOS script will:
+- Install Homebrew and development dependencies
+- Install essential applications (Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI)
+- Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
+
+## Manual Installation
+
+1. **Clone this repository:**
+   ```bash
+   git clone https://github.com/jonnyace/dotfiles.git ~/dev/dotfiles
+   cd ~/dev/dotfiles
+   ```
+
+2. **Run the installation script:**
+   ```bash
+   ./install.sh
+   ```
+
+The script will:
+- Detect your operating system (Arch Linux or macOS)
+- Install GNU Stow if not present
+- Install system packages appropriate for your OS
+- Use Stow to create symbolic links for all configuration files
+- Handle conflicts with existing files safely
+
+## Manual Package Management
+
+### Install specific packages:
+```bash
+# For Linux systems
+cd ~/dev/dotfiles/linux/
+stow shell
+stow terminal
+stow editors
+
+# For macOS systems
+cd ~/dev/dotfiles/macos/
+./macos-setup.sh
+```
+
+### Remove packages:
+```bash
+# For Linux systems
+cd ~/dev/dotfiles/linux/
+stow -D shell
+stow -D terminal editors system-tools desktop x11 hyprland
+```
+
+### Reinstall/update packages:
+```bash
+# For Linux systems
+cd ~/dev/dotfiles/linux/
+stow -R shell
+```
+
+## Package Contents
+
+### shell
+- `.bashrc` - Bash configuration with Omarchy integration
 - `.bash_profile` - Bash profile settings
 - `.gitconfig` - Global git configuration with aliases
 
-#### `linux/terminal/`
+### terminal
 - `alacritty/` - Alacritty terminal emulator configuration
 
-#### `linux/editors/`
-- `nvim/` - Traditional Neovim configuration
+### editors
+- `nvim/` - Complete Neovim configuration with LazyVim
 - `lazygit/` - Lazygit configuration
 
-#### `linux/system-tools/`
-- `btop/` - System monitor configuration and themes
-- `fastfetch/` - System information display
-- `walker/` - Application launcher
+### system-tools
+- `btop/` - btop system monitor configuration and themes
+- `fastfetch/` - System information display configuration
+- `walker/` - Application launcher configuration
 
-#### `linux/desktop/`
+### desktop
 - `fontconfig/` - Font configuration
 - `environment.d/` - Environment variables
 - `mimeapps.list` - Default application associations
 - `user-dirs.dirs` - XDG user directories
 
-#### `linux/x11/`
+### x11
 - `.XCompose` - X11 compose key configuration
 
-#### `linux/hyprland/`
+### hyprland (Linux only)
 - `hypr/` - Hyprland compositor configuration
-- `waybar/` - Waybar status bar
-- `mako/` - Notification daemon
-- `swayosd/` - On-screen display
+- `waybar/` - Waybar status bar configuration
+- `mako/` - Mako notification daemon configuration
+- `swayosd/` - SwayOSD configuration
 
-## Installation
+### macos/
+- `macos-setup.sh` - Cross-platform macOS setup script for development tools and essential applications
 
-### Quick Installation (Recommended)
+## System Packages
 
-**macOS:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install-macos.sh | bash
-```
+The installation script will install essential packages for your system:
 
-**Linux:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install-linux.sh | bash
-```
+### Arch Linux
+- Base packages: npm, nodejs, git, base-devel, syncthing
+- AUR packages: claude-code, brave-bin
+- System tools: btop, fastfetch, lazygit, neovim
 
-### Manual Installation
+### macOS (via Homebrew)
+- Development tools: node, npm, git, stow, neovim, tree, jq, fd, ripgrep, python, pipx
+- Essential applications: Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI
 
-Choose your installation method based on your operating system and preferences:
+## Customization
 
-### macOS Setup (chezmoi + modern tools)
+### Adding new packages
+1. Create a new directory (e.g., `mypackage/`)
+2. Structure it like your home directory (e.g., `mypackage/.config/myapp/config.conf`)
+3. Install with: `stow mypackage`
 
-1. **Install chezmoi and initialize:**
-   ```bash
-   brew install chezmoi
-   chezmoi init jonnyace/dotfiles
-   chezmoi diff
-   chezmoi apply
-   ```
+### Modifying existing packages
+1. Edit files directly in the package directories
+2. Reinstall with: `stow -R <package-name>`
 
-2. **Install development tools:**
-   ```bash
-   brew install neovim fzf zoxide eza fd ripgrep lazygit lazydocker gh
-   brew install --cask alacritty signal
-   ```
-
-### Linux Setup (GNU Stow + optional chezmoi)
-
-#### Option 1: GNU Stow (Traditional Linux approach)
-
-1. **Clone and setup:**
-   ```bash
-   git clone https://github.com/jonnyace/dotfiles.git ~/dotfiles
-   cd ~/dotfiles
-   ```
-
-2. **Install system packages (Arch Linux):**
-   ```bash
-   sudo pacman -S stow git neovim alacritty btop fastfetch lazygit
-   ```
-
-3. **Install configurations selectively:**
-   ```bash
-   cd linux/
-
-   # Essential configs
-   stow shell
-   stow terminal
-   stow editors
-   stow system-tools
-
-   # Desktop environment (optional)
-   stow desktop
-   stow x11
-
-   # Hyprland setup (if using Hyprland)
-   stow hyprland
-   ```
-
-#### Option 2: Hybrid approach (Stow + chezmoi)
-
-1. **Setup GNU Stow for Linux configs:**
-   ```bash
-   git clone https://github.com/jonnyace/dotfiles.git ~/dotfiles
-   cd ~/dotfiles/linux
-   stow shell terminal editors system-tools
-   ```
-
-2. **Setup chezmoi for cross-platform tools:**
-   ```bash
-   # Install chezmoi
-   sudo pacman -S chezmoi  # or: sh -c "$(curl -fsLS get.chezmoi.io)"
-
-   # Initialize and apply cross-platform configs
-   chezmoi init jonnyace/dotfiles
-   chezmoi apply
-   ```
-
-## Managing Dotfiles
-
-### For Cross-Platform Configs (chezmoi)
-
-```bash
-# Add new configurations
-chezmoi add ~/.config/newapp/config.yaml
-chezmoi edit ~/.zshrc
-
-# Update and sync
-chezmoi update    # Pull latest changes
-chezmoi diff      # View differences
-chezmoi apply     # Apply changes
-
-# Push changes
-chezmoi cd
-git add .
-git commit -m "Update configurations"
-git push
-```
-
-### For Linux Configs (GNU Stow)
-
-```bash
-# Add new package
-cd ~/dotfiles/linux
-mkdir newpackage
-# Structure files like: newpackage/.config/app/config.conf
-stow newpackage
-
-# Update existing package
-cd ~/dotfiles/linux
-# Edit files in the package directory
-stow -R packagename    # Restow to apply changes
-
-# Remove package
-stow -D packagename
-
-# Push changes to git
-cd ~/dotfiles
-git add .
-git commit -m "Update Linux configurations"
-git push
-```
-
-### Package Management (Linux Stow)
-
-```bash
-# Install specific packages
-cd ~/dotfiles/linux
-stow shell terminal editors
-
-# Remove packages
-stow -D hyprland desktop
-
-# Reinstall (useful after editing)
-stow -R system-tools
-```
-
-## Configuration Files
-
-### Shell Configuration (`.zshrc`)
-- Homebrew path configuration
-- Zoxide initialization for smart directory navigation
-- FZF shell integration for fuzzy finding
-- Aliases for modern command replacements:
-  - `ls` → `eza`
-  - `ll` → `eza -la`
-
-### LazyVim (`.config/nvim/`)
-- Modern Neovim configuration with lazy loading
-- Plugin management with lazy.nvim
-- Sensible defaults and key mappings
-- LSP integration for development
-
-### Alacritty (`.config/alacritty/`)
-- Cross-platform terminal emulator configuration
-- Performance-optimized settings
-- Custom themes and fonts
-
-## Key Features
-
-### Command Line Enhancements
-- **fzf**: Press `Ctrl+R` for fuzzy command history search
-- **zoxide**: Use `z <directory>` for smart directory jumping
-- **eza**: Enhanced file listing with git status and colors
-- **fd**: Fast file searching with intuitive syntax
-- **ripgrep**: Blazing fast text search across files
-
-### Development Workflow
-- **LazyVim**: Feature-rich Neovim setup with LSP, treesitter, and modern plugins
-- **lazygit**: Visual git interface in terminal
-- **lazydocker**: Docker container management UI
-- **GitHub CLI**: Repository management from command line
-
-### Quick Start Commands
-```bash
-# Smart directory navigation
-z ~/projects/myapp
-
-# Fuzzy find files
-fd myfile
-
-# Search in files
-rg "function myFunc"
-
-# Git operations
-lazygit
-
-# Docker management
-lazydocker
-```
+### OS-specific configurations
+- Add OS-specific packages to the appropriate arrays in `install.sh`
+- Create separate package directories for OS-specific configurations
 
 ## Troubleshooting
 
-### Chezmoi Issues
+### Conflicts with existing files
+If Stow reports conflicts with existing files:
+
 ```bash
-# Check what chezmoi would change
-chezmoi diff
+# Option 1: Backup existing files manually
+mv ~/.bashrc ~/.bashrc.backup
+stow shell
 
-# Force apply all changes
-chezmoi apply --force
+# Option 2: Let stow adopt existing files (overwrites them)
+stow --adopt shell
 
-# Reset to clean state
-chezmoi update --force
+# Option 3: Use the interactive installer
+./install.sh  # It will prompt you for conflict resolution
 ```
 
-### Shell Tools Not Working
+### Package not installing
+- Ensure the package directory exists
+- Check that files follow the correct directory structure
+- Verify Stow is installed: `which stow`
+
+### Remove all dotfiles
 ```bash
-# Reload shell configuration
-source ~/.zshrc
+# For Linux systems
+cd ~/dev/dotfiles/linux/
+stow -D shell terminal editors system-tools desktop x11 hyprland
 
-# Check if tools are installed
-which fzf zoxide eza fd rg lazygit gh
-
-# Reinstall missing tools (macOS)
-brew install fzf zoxide eza fd ripgrep lazygit lazydocker gh
-```
-
-### LazyVim Issues
-```bash
-# Update LazyVim plugins
-nvim +Lazy update
-
-# Check health
-nvim +checkhealth
+# For macOS systems
+# macOS configurations are handled by the setup script and system preferences
 ```
 
 ## Requirements
 
-- **chezmoi**: Dotfile management
-- **Git**: Version control and repository management
-- **Shell**: zsh or bash
+- **GNU Stow**: Automatically installed by the setup script
+- **Bash**: For the installation scripts
+- **Git**: For cloning and managing the repository
 
 ### Platform-specific requirements
-- **macOS**: Homebrew for package management
-- **Linux**: System package manager (pacman, apt, etc.)
+- **Arch Linux**: pacman, yay (installed automatically)
+- **macOS**: Homebrew (installed automatically if missing)
 
 ## License
 
