@@ -41,6 +41,7 @@ curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-
 The macOS script will:
 - Install Homebrew and development dependencies
 - Install essential applications (Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI)
+- Configure Terminal.app to use zsh as the default shell
 - Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
 
 ## Manual Installation

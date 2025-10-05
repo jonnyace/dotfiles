@@ -128,6 +128,38 @@ installDepend() {
     fi
 }
 
+configure_terminal() {
+    ## Configure macOS Terminal.app to use zsh by default
+    printf "%b\n" "${YELLOW}Configuring Terminal.app for zsh...${RC}"
+
+    # Check if zsh is installed
+    if ! command -v zsh >/dev/null 2>&1; then
+        printf "%b\n" "${RED}zsh is not installed${RC}"
+        return 1
+    fi
+
+    # Get the path to zsh
+    ZSH_PATH=$(command -v zsh)
+    printf "%b\n" "${CYAN}Found zsh at: $ZSH_PATH${RC}"
+
+    # Check if zsh is in the list of valid shells
+    if ! grep -q "$ZSH_PATH" /etc/shells; then
+        printf "%b\n" "${YELLOW}Adding zsh to /etc/shells...${RC}"
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells
+    fi
+
+    # Change default shell to zsh
+    CURRENT_SHELL=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
+    if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
+        printf "%b\n" "${CYAN}Changing default shell to zsh...${RC}"
+        chsh -s "$ZSH_PATH"
+        printf "%b\n" "${GREEN}✓ Default shell changed to zsh${RC}"
+        printf "%b\n" "${YELLOW}Note: You may need to restart your terminal for this change to take effect${RC}"
+    else
+        printf "%b\n" "${GREEN}✓ zsh is already the default shell${RC}"
+    fi
+}
+
 
 install_dotfiles() {
     printf "%b\n" "${YELLOW}Installing dotfiles using GNU Stow...${RC}"
@@ -185,8 +217,12 @@ main() {
     printf "%b\n" "${GREEN}1. Installing development dependencies and applications...${RC}"
     installDepend
 
+    echo "Debug: calling configure_terminal"
+    printf "%b\n" "${GREEN}2. Configuring terminal for zsh...${RC}"
+    configure_terminal
+
     echo "Debug: calling install_dotfiles"
-    printf "%b\n" "${GREEN}2. Installing dotfiles...${RC}"
+    printf "%b\n" "${GREEN}3. Installing dotfiles...${RC}"
     install_dotfiles
 
     printf "%b\n" "${GREEN}Cross-Platform macOS Setup Complete!${RC}"
