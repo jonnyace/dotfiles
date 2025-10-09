@@ -73,7 +73,11 @@ install_packages() {
             fi
 
             # Install AUR packages
-            yay -S --needed --noconfirm github-cli lazydocker
+            yay -S --needed --noconfirm github-cli lazydocker brave-bin
+
+            # Set Brave as default browser
+            xdg-settings set default-web-browser brave-browser.desktop
+            xdg-mime default brave-browser.desktop x-scheme-handler/http x-scheme-handler/https text/html
             ;;
         "debian")
             sudo apt update
