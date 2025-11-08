@@ -1,0 +1,15 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = linux
+Target = linux-lts
+Target = linux-zen
+Target = linux-hardened
+Target = limine
+Target = systemd
+
+[Action]
+Description = Signing EFI binaries for Secure Boot...
+When = PostTransaction
+Exec = /usr/bin/sbctl sign-all
