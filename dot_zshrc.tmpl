@@ -1,0 +1,7 @@
+# Managed by chezmoi.
+{{ template "shell/common.zsh.tmpl" . }}
+{{- if eq .chezmoi.os "darwin" }}
+{{ template "shell/darwin.zsh.tmpl" . }}
+{{- else if eq .chezmoi.os "linux" }}
+{{ template "shell/linux.zsh.tmpl" . }}
+{{- end }}

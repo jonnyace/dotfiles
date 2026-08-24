@@ -1,6 +1,0 @@
-export PATH="/opt/homebrew/bin:$PATH"
-eval "$(zoxide init zsh)"
-source <(fzf --zsh)
-alias ls="eza"
-alias ll="eza -la"
-alias gh="gh"

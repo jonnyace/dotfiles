@@ -1,206 +1,56 @@
-# Arch Linux & macOS Dotfiles
+# Cross-platform dotfiles
 
-Cross-platform configuration files and settings for Arch Linux and macOS using GNU Stow for easy management.
+One Chezmoi repository for macOS and Linux. Shared configuration stays in one
+place, while operating-system differences are explicit and testable.
 
-## Features
+## Why Chezmoi
 
-- **Cross-platform**: Works on both Arch Linux and macOS
-- **GNU Stow integration**: Easy installation, removal, and management of dotfiles
-- **Modular packages**: Install only the configurations you need
-- **Automatic OS detection**: Installs appropriate packages for your system
-- **Conflict resolution**: Safe handling of existing configuration files
+Chezmoi provides a reviewable `diff`/`apply` workflow, OS-aware templates, and
+safe handling of machine-specific configuration. GNU Stow is intentionally no
+longer used by this repository.
 
-## Package Structure
+## Layout
 
-This repository is organized into platform-specific folders containing modular packages:
+- `dot_*` and `dot_config/`: active Chezmoi-managed files.
+- `.chezmoitemplates/shell/`: shared, macOS, and Linux shell fragments.
+- `packages/darwin.Brewfile`: macOS command-line packages.
+- `packages/linux-arch.txt`: Arch Linux command-line packages.
+- `legacy/stow-linux/`: previous Stow/Omarchy configuration retained as an
+  ignored migration reference. It is not applied by Chezmoi.
 
-### Linux Packages (linux/)
-- **shell**: Bash configuration, git config, and shell environment
-- **terminal**: Alacritty terminal configuration
-- **editors**: Neovim and Lazygit configurations
-- **system-tools**: btop, fastfetch, and walker configurations
-- **desktop**: Desktop environment files (fontconfig, mimeapps, etc.)
-- **x11**: X11 configuration files
-- **hyprland**: Hyprland window manager, Waybar, Mako notifications, SwayOSD
+Hyprland is managed only on Linux. Neovim and most shell behavior are shared.
+Alacritty uses an OS-aware template.
 
-### macOS Packages (macos/)
-- **macos-setup.sh**: Cross-platform macOS setup script that installs development tools, essential applications, and dotfiles
+## Existing clone
 
-## One-Line Installation
+Install or reconcile packages:
 
-**Linux/Arch systems:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+```sh
+./bootstrap.sh
 ```
 
-**macOS systems:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/macos/macos-setup.sh | bash
+Always review before applying:
+
+```sh
+chezmoi --source "$PWD" diff
+chezmoi --source "$PWD" apply --interactive
 ```
 
-The macOS script will:
-- Install Homebrew and development dependencies
-- Install essential applications (Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI)
-- Configure Terminal.app to use zsh as the default shell
-- Clone and install cross-platform dotfiles (shell, terminal, editors, system-tools)
+## New machine
 
-## Manual Installation
+Install Chezmoi, initialize this repository, review, and then apply:
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/jonnyace/dotfiles.git ~/dev/dotfiles
-   cd ~/dev/dotfiles
-   ```
-
-2. **Run the installation script:**
-   ```bash
-   ./install.sh
-   ```
-
-The script will:
-- Detect your operating system (Arch Linux or macOS)
-- Install GNU Stow if not present
-- Install system packages appropriate for your OS
-- Use Stow to create symbolic links for all configuration files
-- Handle conflicts with existing files safely
-
-## Manual Package Management
-
-### Install specific packages:
-```bash
-# For Linux systems
-cd ~/dev/dotfiles/linux/
-stow shell
-stow terminal
-stow editors
-
-# For macOS systems
-cd ~/dev/dotfiles/macos/
-./macos-setup.sh
+```sh
+chezmoi init jonnyace/dotfiles
+chezmoi diff
+chezmoi apply --interactive
 ```
 
-### Remove packages:
-```bash
-# For Linux systems
-cd ~/dev/dotfiles/linux/
-stow -D shell
-stow -D terminal editors system-tools desktop x11 hyprland
-```
+The package bootstrap never installs desktop applications, changes the default
+browser, adopts existing files, or applies dotfiles automatically.
 
-### Reinstall/update packages:
-```bash
-# For Linux systems
-cd ~/dev/dotfiles/linux/
-stow -R shell
-```
+## Local and sensitive state
 
-## Package Contents
-
-### shell
-- `.bashrc` - Bash configuration with Omarchy integration
-- `.bash_profile` - Bash profile settings
-- `.gitconfig` - Global git configuration with aliases
-
-### terminal
-- `alacritty/` - Alacritty terminal emulator configuration
-
-### editors
-- `nvim/` - Complete Neovim configuration with LazyVim
-- `lazygit/` - Lazygit configuration
-
-### system-tools
-- `btop/` - btop system monitor configuration and themes
-- `fastfetch/` - System information display configuration
-- `walker/` - Application launcher configuration
-
-### desktop
-- `fontconfig/` - Font configuration
-- `environment.d/` - Environment variables
-- `mimeapps.list` - Default application associations
-- `user-dirs.dirs` - XDG user directories
-
-### x11
-- `.XCompose` - X11 compose key configuration
-
-### hyprland (Linux only)
-- `hypr/` - Hyprland compositor configuration
-- `waybar/` - Waybar status bar configuration
-- `mako/` - Mako notification daemon configuration
-- `swayosd/` - SwayOSD configuration
-
-### macos/
-- `macos-setup.sh` - Cross-platform macOS setup script for development tools and essential applications
-
-## System Packages
-
-The installation script will install essential packages for your system:
-
-### Arch Linux
-- Base packages: npm, nodejs, git, base-devel, syncthing
-- AUR packages: claude-code, brave-bin
-- System tools: btop, fastfetch, lazygit, neovim
-
-### macOS (via Homebrew)
-- Development tools: node, npm, git, stow, neovim, tree, jq, fd, ripgrep, python, pipx
-- Essential applications: Dropbox, Spotify, 1Password, Alacritty, Brave Browser, Claude CLI
-
-## Customization
-
-### Adding new packages
-1. Create a new directory (e.g., `mypackage/`)
-2. Structure it like your home directory (e.g., `mypackage/.config/myapp/config.conf`)
-3. Install with: `stow mypackage`
-
-### Modifying existing packages
-1. Edit files directly in the package directories
-2. Reinstall with: `stow -R <package-name>`
-
-### OS-specific configurations
-- Add OS-specific packages to the appropriate arrays in `install.sh`
-- Create separate package directories for OS-specific configurations
-
-## Troubleshooting
-
-### Conflicts with existing files
-If Stow reports conflicts with existing files:
-
-```bash
-# Option 1: Backup existing files manually
-mv ~/.bashrc ~/.bashrc.backup
-stow shell
-
-# Option 2: Let stow adopt existing files (overwrites them)
-stow --adopt shell
-
-# Option 3: Use the interactive installer
-./install.sh  # It will prompt you for conflict resolution
-```
-
-### Package not installing
-- Ensure the package directory exists
-- Check that files follow the correct directory structure
-- Verify Stow is installed: `which stow`
-
-### Remove all dotfiles
-```bash
-# For Linux systems
-cd ~/dev/dotfiles/linux/
-stow -D shell terminal editors system-tools desktop x11 hyprland
-
-# For macOS systems
-# macOS configurations are handled by the setup script and system preferences
-```
-
-## Requirements
-
-- **GNU Stow**: Automatically installed by the setup script
-- **Bash**: For the installation scripts
-- **Git**: For cloning and managing the repository
-
-### Platform-specific requirements
-- **Arch Linux**: pacman, yay (installed automatically)
-- **macOS**: Homebrew (installed automatically if missing)
-
-## License
-
-This project is open source. Feel free to fork and customize for your own use.
+Git credential helpers, tokens, API keys, and machine-local files should not be
+committed. This repository deliberately does not manage `~/.gitconfig`, so an
+existing GitHub credential setup is preserved.

@@ -1,0 +1,17 @@
+# Repository-only files
+README.md
+bootstrap.sh
+packages/**
+
+# Previous Stow layout, retained temporarily as a migration reference.
+legacy/**
+macos/**
+scripts/**
+install-linux.sh
+install-macos.sh
+install.sh
+
+# Hyprland is Linux-only.
+{{- if ne .chezmoi.os "linux" }}
+.config/hypr/**
+{{- end }}

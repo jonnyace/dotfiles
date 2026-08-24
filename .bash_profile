@@ -1,1 +1,0 @@
-linux/shell/.bash_profile
