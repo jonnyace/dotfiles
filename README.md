@@ -38,16 +38,19 @@ chezmoi --source "$PWD" apply --interactive
 
 ## New machine
 
-Install Chezmoi, initialize this repository, review, and then apply:
+After installing Homebrew, install Chezmoi, initialize this repository, install
+the declared packages, review the diff, and then apply:
 
 ```sh
+brew install chezmoi
 chezmoi init jonnyace/dotfiles
+~/.local/share/chezmoi/bootstrap.sh
 chezmoi diff
 chezmoi apply --interactive
 ```
 
-The package bootstrap never installs desktop applications, changes the default
-browser, adopts existing files, or applies dotfiles automatically.
+The package bootstrap installs Ghostty on macOS, but does not change the default
+browser, adopt existing files, or apply dotfiles automatically.
 
 ## Local and sensitive state
 

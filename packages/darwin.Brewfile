@@ -20,6 +20,7 @@ brew "fastfetch"
 brew "node"
 brew "python@3.14"
 brew "pipx"
+brew "opencode"
 
 # macOS terminal emulator.
 cask "ghostty"
