@@ -14,4 +14,10 @@ install.sh
 # Hyprland is Linux-only.
 {{- if ne .chezmoi.os "linux" }}
 .config/hypr/**
+.config/foot/**
+{{- end }}
+
+# Ghostty is the macOS terminal.
+{{- if ne .chezmoi.os "darwin" }}
+.config/ghostty/**
 {{- end }}

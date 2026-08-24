@@ -20,3 +20,5 @@ nodejs
 npm
 python
 python-pipx
+foot
+foot-terminfo

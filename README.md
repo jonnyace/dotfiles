@@ -18,8 +18,8 @@ longer used by this repository.
 - `legacy/stow-linux/`: previous Stow/Omarchy configuration retained as an
   ignored migration reference. It is not applied by Chezmoi.
 
-Hyprland is managed only on Linux. Neovim and most shell behavior are shared.
-Alacritty uses an OS-aware template.
+Hyprland and Foot are managed only on Linux. Ghostty is managed only on macOS.
+Neovim and most shell behavior are shared.
 
 ## Existing clone
 
