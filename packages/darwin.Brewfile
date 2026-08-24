@@ -22,5 +22,8 @@ brew "python@3.14"
 brew "pipx"
 brew "opencode"
 
-# macOS terminal emulator.
+# macOS applications and security tooling.
 cask "ghostty"
+cask "1password"
+cask "1password-cli"
+cask "tailscale-app"

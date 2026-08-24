@@ -23,6 +23,24 @@ case "$(uname -s)" in
       packages+=("$package")
     done < "$repo_dir/packages/linux-arch.txt"
     sudo pacman -S --needed --noconfirm "${packages[@]}"
+
+    aur_packages=()
+    while IFS= read -r package; do
+      [[ -z "$package" || "$package" == \#* ]] && continue
+      aur_packages+=("$package")
+    done < "$repo_dir/packages/linux-arch-aur.txt"
+
+    if ((${#aur_packages[@]})); then
+      if command -v paru >/dev/null 2>&1; then
+        paru -S --needed "${aur_packages[@]}"
+      elif command -v yay >/dev/null 2>&1; then
+        yay -S --needed "${aur_packages[@]}"
+      else
+        echo "1Password packages require an AUR helper (paru or yay)." >&2
+        echo "Review packages/linux-arch-aur.txt, install a helper, and rerun this script." >&2
+        exit 1
+      fi
+    fi
     ;;
   *)
     echo "Unsupported operating system: $(uname -s)" >&2

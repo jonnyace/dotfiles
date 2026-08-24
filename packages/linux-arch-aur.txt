@@ -1,0 +1,4 @@
+# 1Password publishes the desktop app through the AUR. The CLI package verifies
+# 1Password's signed release artifact. Review AUR PKGBUILDs before installing.
+1password
+1password-cli

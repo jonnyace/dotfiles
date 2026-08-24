@@ -23,3 +23,4 @@ python-pipx
 foot
 foot-terminfo
 opencode
+tailscale
