@@ -9,6 +9,10 @@ zoxide
 eza
 tree
 neovim
+tree-sitter-cli
+stylua
+shfmt
+shellcheck
 lazygit
 btop
 fastfetch
