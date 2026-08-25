@@ -1,6 +1,5 @@
 # Repository-only files
 README.md
-bootstrap.sh
 packages/**
 docs/**
 
