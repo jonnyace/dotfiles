@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-shot installer for macOS and Arch Linux.
-# Safe to pipe:
-#   curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+# Prefers a TTY so chezmoi --interactive prompts work:
+#   sh -c "$(curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh)"
 
 set -euo pipefail
 
@@ -16,7 +16,7 @@ repo_dir_from_script() {
   [[ -n "$src" && -f "$src" ]] || return 1
   local dir
   dir="$(cd "$(dirname "$src")" && pwd)"
-  [[ -f "$dir/bootstrap.sh" ]] || return 1
+  [[ -d "$dir/packages" && -f "$dir/run_onchange_before_install-packages.sh.tmpl" ]] || return 1
   printf '%s\n' "$dir"
 }
 
@@ -80,21 +80,27 @@ origin_is_this_repo() {
   [[ "$origin" == *"$repo"* ]]
 }
 
-init_source() {
-  local local_repo
+prompt_tty() {
+  if [[ -r /dev/tty ]]; then
+    "$@" </dev/tty
+  else
+    "$@"
+  fi
+}
+
+apply_with_chezmoi() {
+  local local_repo=""
+  local source_path=""
+  local origin=""
+
   if local_repo="$(repo_dir_from_script)"; then
-    echo "Using local repository $local_repo"
-    cd "$local_repo"
+    echo "Initializing chezmoi from $local_repo"
+    prompt_tty chezmoi init --apply --interactive --source "$local_repo"
     return
   fi
 
-  local source_path=""
-  if have chezmoi; then
-    source_path="$(chezmoi source-path 2>/dev/null || true)"
-  fi
-
+  source_path="$(chezmoi source-path 2>/dev/null || true)"
   if [[ -n "$source_path" && -d "$source_path/.git" ]]; then
-    local origin
     origin="$(git -C "$source_path" remote get-url origin 2>/dev/null || true)"
     if ! origin_is_this_repo "$origin"; then
       echo "chezmoi is already initialized from ${origin:-an unknown repository}." >&2
@@ -102,16 +108,14 @@ init_source() {
       exit 1
     fi
     echo "Updating $source_path"
-    git -C "$source_path" pull --ff-only
-    cd "$source_path"
+    chezmoi git pull -- --ff-only
+    prompt_tty chezmoi apply --interactive
     return
   fi
 
   echo "Initializing chezmoi from $repo"
-  chezmoi init "$repo"
-  cd "$(chezmoi source-path)"
+  prompt_tty chezmoi init --apply --interactive "$repo"
 }
 
 ensure_prereqs
-init_source
-./bootstrap.sh
+apply_with_chezmoi

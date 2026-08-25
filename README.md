@@ -21,23 +21,20 @@ are shared.
 On a new macOS or Arch Linux machine:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh)"
 ```
 
 The script installs missing prerequisites (Homebrew and Chezmoi on macOS; Git
-and Chezmoi on Arch), clones this repository, and runs `bootstrap.sh`. It does
-not apply dotfiles. After it finishes, review and apply:
-
-```sh
-chezmoi diff
-chezmoi apply --interactive
-```
+and Chezmoi on Arch), then runs `chezmoi init --apply --interactive`. Chezmoi
+installs packages from the manifests first, then prompts before writing
+dotfiles.
 
 Arch Linux still needs `paru` or `yay` first, because those are required for
 the 1Password packages. Codex stays outside this installer; use the standalone
 command in the platform sections below.
 
-The same steps are written out per platform if you prefer to run them by hand.
+The same Chezmoi commands are written out per platform if you prefer to run
+them by hand.
 
 ## New macOS machine
 
@@ -45,8 +42,14 @@ The same steps are written out per platform if you prefer to run them by hand.
 
 ```sh
 brew install chezmoi
+chezmoi init --apply --interactive jonnyace/dotfiles
+```
+
+To review the diff before applying, split that into:
+
+```sh
+brew install chezmoi
 chezmoi init jonnyace/dotfiles
-~/.local/share/chezmoi/bootstrap.sh
 chezmoi diff
 chezmoi apply --interactive
 ```
@@ -66,8 +69,14 @@ helper is required for the 1Password desktop and CLI packages.
 
 ```sh
 sudo pacman -S --needed git chezmoi
+chezmoi init --apply --interactive jonnyace/dotfiles
+```
+
+To review the diff before applying, split that into:
+
+```sh
+sudo pacman -S --needed git chezmoi
 chezmoi init jonnyace/dotfiles
-~/.local/share/chezmoi/bootstrap.sh
 chezmoi diff
 chezmoi apply --interactive
 ```
@@ -82,19 +91,19 @@ codex
 ## Existing machine
 
 Pull package and configuration updates without applying dotfiles automatically.
-Rerunning the one-line installer does the same pull and bootstrap.
+Rerunning the one-line installer does the same pull, then applies
+interactively.
 
 ```sh
-cd "$(chezmoi source-path)"
-git pull --ff-only
-./bootstrap.sh
+chezmoi git pull -- --ff-only
 chezmoi diff
 chezmoi apply --interactive
 ```
 
 ## Installed tools
 
-The bootstrap installs the following shared environment:
+Chezmoi runs `run_onchange_before_install-packages.sh.tmpl` during apply, which
+installs the following shared environment:
 
 - Dotfiles and source control: Chezmoi, Git, GitHub CLI, and Lazygit.
 - Search and navigation: ripgrep, `fd`, `fzf`, Zoxide, Eza, and `tree`.
@@ -112,10 +121,12 @@ its terminfo package. The package lists are the source of truth:
 - `packages/linux-arch.txt`
 - `packages/linux-arch-aur.txt`
 
+Changing a manifest re-runs the package script on the next apply.
+
 ## Required interactive setup
 
-The bootstrap installs software but deliberately does not authenticate accounts
-or approve security-sensitive operating-system permissions.
+Chezmoi installs software but deliberately does not authenticate accounts or
+approve security-sensitive operating-system permissions.
 
 ### 1Password
 
@@ -146,18 +157,20 @@ tailscale status
 
 ## Repository layout
 
-- `install.sh`: one-shot installer for macOS and Arch Linux.
+- `install.sh`: installs Chezmoi if needed, then runs `chezmoi init --apply`.
+- `run_onchange_before_install-packages.sh.tmpl`: package install during apply.
 - `dot_*` and `dot_config/`: active Chezmoi-managed files.
 - `.chezmoitemplates/shell/`: shared, macOS, and Linux shell fragments.
-- `packages/`: declarative package manifests used by `bootstrap.sh`.
+- `packages/`: declarative package manifests read by the apply script.
 - `legacy/stow-linux/`: ignored migration reference from the previous Stow and
   Omarchy layout; Chezmoi does not apply it.
 
 ## Safety and sensitive state
 
-Always inspect `chezmoi diff` before applying. The bootstrap does not apply
-dotfiles, adopt existing files, change the default browser, sign in to accounts,
-or approve VPN and security permissions.
+Always inspect `chezmoi diff` before applying, or use `--interactive` so Chezmoi
+prompts before each change. Package installation runs as a before-apply script;
+it does not adopt existing files, change the default browser, sign in to
+accounts, or approve VPN and security permissions.
 
 Do not commit API keys, tokens, passwords, Git credentials, or machine-local
 state. This repository deliberately does not manage `~/.gitconfig`, preserving

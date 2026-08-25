@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Re-run when package manifests change.
+# darwin: {{ include "packages/darwin.Brewfile" | sha256sum }}
+# linux: {{ include "packages/linux-arch.txt" | sha256sum }}
+# aur: {{ include "packages/linux-arch-aur.txt" | sha256sum }}
+
+source_dir={{ .chezmoi.sourceDir | quote }}
+
+have() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+load_homebrew() {
+  if have brew; then
+    return
+  fi
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
+case "$(uname -s)" in
+  Darwin)
+    load_homebrew
+    if ! have brew; then
+      echo "Installing Homebrew..."
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      load_homebrew
+    fi
+    if ! have brew; then
+      echo "Homebrew is required. Install it from https://brew.sh and rerun chezmoi apply." >&2
+      exit 1
+    fi
+    brew bundle --file "$source_dir/packages/darwin.Brewfile"
+    ;;
+  Linux)
+    if [[ ! -r /etc/arch-release ]]; then
+      echo "Only Arch Linux package bootstrapping is currently supported." >&2
+      exit 1
+    fi
+    packages=()
+    while IFS= read -r package; do
+      [[ -z "$package" || "$package" == \#* ]] && continue
+      packages+=("$package")
+    done < "$source_dir/packages/linux-arch.txt"
+    sudo pacman -S --needed --noconfirm "${packages[@]}"
+
+    aur_packages=()
+    while IFS= read -r package; do
+      [[ -z "$package" || "$package" == \#* ]] && continue
+      aur_packages+=("$package")
+    done < "$source_dir/packages/linux-arch-aur.txt"
+
+    if ((${#aur_packages[@]})); then
+      if have paru; then
+        paru -S --needed "${aur_packages[@]}"
+      elif have yay; then
+        yay -S --needed "${aur_packages[@]}"
+      else
+        echo "1Password packages require an AUR helper (paru or yay)." >&2
+        echo "Review packages/linux-arch-aur.txt, install a helper, and rerun chezmoi apply." >&2
+        exit 1
+      fi
+    fi
+    ;;
+  *)
+    echo "Unsupported operating system: $(uname -s)" >&2
+    exit 1
+    ;;
+esac
