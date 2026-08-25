@@ -2,6 +2,7 @@
 README.md
 bootstrap.sh
 packages/**
+docs/**
 
 # Previous Stow layout, retained temporarily as a migration reference.
 legacy/**
