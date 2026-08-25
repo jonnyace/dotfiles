@@ -16,6 +16,29 @@ remain explicit and reviewable. GNU Stow is no longer used.
 Neovim, shell behavior, command-line tools, OpenCode, and most configuration
 are shared.
 
+## One-line installation
+
+On a new macOS or Arch Linux machine:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/jonnyace/dotfiles/main/install.sh | bash
+```
+
+The script installs missing prerequisites (Homebrew and Chezmoi on macOS; Git
+and Chezmoi on Arch), clones this repository, and runs `bootstrap.sh`. It does
+not apply dotfiles. After it finishes, review and apply:
+
+```sh
+chezmoi diff
+chezmoi apply --interactive
+```
+
+Arch Linux still needs `paru` or `yay` first, because those are required for
+the 1Password packages. Codex stays outside this installer; use the standalone
+command in the platform sections below.
+
+The same steps are written out per platform if you prefer to run them by hand.
+
 ## New macOS machine
 
 [Install Homebrew](https://brew.sh/), then run:
@@ -58,7 +81,8 @@ codex
 
 ## Existing machine
 
-Pull package and configuration updates without applying dotfiles automatically:
+Pull package and configuration updates without applying dotfiles automatically.
+Rerunning the one-line installer does the same pull and bootstrap.
 
 ```sh
 cd "$(chezmoi source-path)"
@@ -122,6 +146,7 @@ tailscale status
 
 ## Repository layout
 
+- `install.sh`: one-shot installer for macOS and Arch Linux.
 - `dot_*` and `dot_config/`: active Chezmoi-managed files.
 - `.chezmoitemplates/shell/`: shared, macOS, and Linux shell fragments.
 - `packages/`: declarative package manifests used by `bootstrap.sh`.
